@@ -102,12 +102,16 @@ class IndoorMath {
 //        positions.append([18.5, 12.5])
 //        distances.append(5.9)
 //
-//        positions.append([10.5 , 15.6])
+//        positions.append([10.5, 15.6])
 //        distances.append(13.1)
         
         let lmaMath = LMAMath()
         let location = lmaMath.solve(positions: positions, distances: distances)
         
-        return (location.x, location.y)
+        if location.isEmpty {
+            return (nil, nil)
+        } else {
+            return (location[0], location[1])
+        }
     }
 }

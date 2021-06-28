@@ -4,7 +4,7 @@
 //
 //  Created by Vitaliy Gribko on 18.03.2021.
 //
-//  Solves a formulation of n-D space trilateration problem (2D in this application)
+//  Solves a formulation of n-D space trilateration problem
 //  using a nonlinear least squares optimizer. Uses Levenberg-Marquardt algorithm.
 //
 
@@ -16,15 +16,17 @@ class LMAMath {
         case costRelativeTolerance
         case parRelativeTolerance
         case orthoTolerance
+        case maxEvaluations
+        case maxIterations
     }
     
     private struct Optimum {
+        static let maxEvaluations = 1000
+        static let maxIterations = 1000
+        
         var target: [Double] = []
         var weightSquareRoot: [Double] = []
         var start: [Double] = []
-        
-        var maxEvaluations = 1000
-        var maxIterations = 1000
     }
     
     private struct Evaluation {
@@ -45,16 +47,23 @@ class LMAMath {
     private var positions: [[Double]] = []
     private var distances: [Double] = []
     
-    func solve(positions: [[Double]], distances: [Double]) -> (x: Double?, y: Double?) {
+    func solve(positions: [[Double]], distances: [Double]) -> [Double] {
         guard positions.count > 2 && distances.count > 2 && positions.count == distances.count else {
-            return (nil, nil)
+            return [Double]()
+        }
+        
+        let numberOfPositions = positions.count
+        let positionDimension = positions[0].count
+        
+        let coordinates = positions.lazy.map { $0 }
+        for i in 0..<coordinates.count {
+            if coordinates[i].count != positionDimension {
+                return [Double]()
+            }
         }
         
         self.positions = positions
         self.distances = distances
-        
-        let numberOfPositions = positions.count
-        let positionDimension = positions[0].count
         
         // Initial point, use average of the vertices
         var initialPoint = Array(repeating: 0.0, count: positionDimension)
@@ -78,9 +87,9 @@ class LMAMath {
         // (x0+xi)^2 + (y0+yi)^2 + ri^2 = target[i]
         do {
             let evaluation = try optimize(optium: optimum)
-            return (evaluation.point[0], evaluation.point[1])
+            return evaluation.point
         } catch {
-            return (nil, nil)
+            return [Double]()
         }
     }
     
@@ -107,8 +116,8 @@ class LMAMath {
         // Pull in relevant data from the problem as locals
         let nR = optium.target.count // Number of observed data
         let nC = optium.start.count // Number of parameters
-        var iterationCounter = optium.maxIterations
-        var evaluationCounter = optium.maxEvaluations
+        var iterationCounter = 0
+        var evaluationCounter = 1
         
         // Levenberg-Marquardt parameters
         let solvedCols = min(nR, nC)
@@ -127,7 +136,6 @@ class LMAMath {
         var work3   = Array(repeating: 0.0, count: nC)
         
         // Evaluate the function at the starting point and calculate its norm
-        evaluationCounter += 1
         var current = Evaluation(jacobian: jacobian(point: optium.start), residuals: value(point: optium.start), point: optium.start)
         var currentResiduals = getResiduals(residuals: current.residuals, weightSquareRoot: optium.weightSquareRoot)
         var currentCost = getCost(residuals: currentResiduals)
@@ -136,6 +144,10 @@ class LMAMath {
         var firstIteration = true
         while true {
             iterationCounter += 1
+            if iterationCounter > Optimum.maxIterations {
+                throw LMAMathError.maxIterations
+            }
+            
             let previous = current
             
             // QR decomposition of the jacobian matrix
@@ -241,6 +253,9 @@ class LMAMath {
                 
                 // Evaluate the function at x + p and calculate its norm
                 evaluationCounter += 1
+                if evaluationCounter > Optimum.maxEvaluations {
+                    throw LMAMathError.maxEvaluations
+                }
                 
                 current = Evaluation(jacobian: jacobian(point: currentPoint), residuals: value(point: currentPoint), point: currentPoint)
                 currentResiduals = getResiduals(residuals: current.residuals, weightSquareRoot: optium.weightSquareRoot)
