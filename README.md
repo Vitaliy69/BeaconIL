@@ -25,7 +25,7 @@
 
 | Component | Responsibility |
 |---|---|
-| `ScanController` | Main screen: beacon list (`UITableViewDiffableDataSource`) and SpriteKit visualization. Wires scanning, position calculation and rendering together. |
+| `ScanController` | Main screen: beacon list (`UITableViewDiffableDataSource`) and SpriteKit visualization. Manages dispatch thread isolation between background BLE ranging events and main-thread UI/render topology updates. |
 | `BeaconScan` | Wrapper around `CLLocationManager`: iBeacon ranging via `CLBeaconIdentityConstraint`, building the snapshot of visible beacons, calibration mode. |
 | `BeaconKnown` | CRUD for stored beacons (coordinates, 1-meter RSSI, name) on top of Core Data. |
 | `IndoorMath` | Per-beacon RSSI storage, EMA smoothing, RSSI-to-distance conversion and trilateration call (`getLocation()`). |
