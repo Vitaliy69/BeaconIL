@@ -3,7 +3,7 @@
 ![Top language](https://img.shields.io/github/languages/top/Vitaliy69/BeaconIL)
 ![Code size](https://img.shields.io/github/languages/code-size/Vitaliy69/BeaconIL)
 ![Last commit](https://img.shields.io/github/last-commit/Vitaliy69/BeaconIL)
-![License](https://img.shields.io/github/license/Vitaliy69/BeaconIL)
+![License](https://img.shields.io/github/license/Vitaliy69/BeaconIL?style=flat)
 
 **BeaconIL** (Beacon Indoor Localization) is an iOS app for indoor positioning based on **iBeacon** BLE beacons. It scans nearby beacons, estimates the distance to each one from signal strength (RSSI), computes the device's position via trilateration, and renders it in real time on a floor plan.
 
