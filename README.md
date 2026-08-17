@@ -102,6 +102,16 @@ Place the iPhone/iPad 1 meter away from the beacon at the same height and start 
    - `NSLocationWhenInUseUsageDescription`
 5. Run on a real device, then add beacons: tap a beacon row in the list, set its coordinates and calibrate it.
 
+## Tests
+
+The math core (`LMAMath.swift`) is also compiled as a standalone Swift package target, so the solver can be tested without opening the Xcode project or a device:
+
+```bash
+swift run beaconil-tests
+```
+
+The suite covers exact and noisy solutions, higher-dimensional anchors, cross-validation against the Go port ([lmamath](https://github.com/Vitaliy69/lmamath)), and rejection of malformed inputs (zero/negative/NaN distances, non-finite coordinates, inconsistent dimensionality).
+
 ## License
 
 Released under the MIT License. See the [LICENSE](LICENSE) file.

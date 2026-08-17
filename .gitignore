@@ -64,3 +64,6 @@ iOSInjectionProject/
 *.moved-aside
 *.xcuserstate
 *.xcscmblueprint
+
+# Swift Package Manager
+.swiftpm/
