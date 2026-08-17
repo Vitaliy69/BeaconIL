@@ -60,6 +60,13 @@ class LMAMath {
             if coordinates[i].count != positionDimension {
                 return [Double]()
             }
+            for coordinate in coordinates[i] where !coordinate.isFinite {
+                return [Double]()
+            }
+        }
+
+        for distance in distances where !distance.isFinite || distance <= 0 {
+            return [Double]()
         }
         
         self.positions = positions
