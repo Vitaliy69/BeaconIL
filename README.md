@@ -110,7 +110,7 @@ The math core (`LMAMath.swift`) is also compiled as a standalone Swift package t
 swift run beaconil-tests
 ```
 
-The suite covers exact and noisy solutions, higher-dimensional anchors, cross-validation against the Go port ([lmamath](https://github.com/Vitaliy69/lmamath)), and rejection of malformed inputs (zero/negative/NaN distances, non-finite coordinates, inconsistent dimensionality).
+The suite runs 11 checks: exact and noisy solutions, higher-dimensional anchors, cross-validation against the Go port ([lmamath](https://github.com/Vitaliy69/lmamath)), and rejection of malformed inputs (zero/negative/NaN distances, non-finite coordinates, inconsistent dimensionality).
 
 ## License
 
